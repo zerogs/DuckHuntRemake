@@ -135,7 +135,7 @@ class Game implements Runnable{
                 game.ducks.remove(this);
                 this.repaint();
             }
-        }
+        } 
 
         public Dimension getPreferredSize() { return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);}
         public Dimension getMinimumSize() { return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);}
