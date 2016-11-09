@@ -10,25 +10,9 @@ public class Duck extends JComponent {
     int y;
     boolean alive;
     boolean way;
-    GUI gui;
-    Game game;
 
-    /* Singleton */
-
-    private static class DuckHolder {
-        private final static Duck instance = new Duck(Game.getInstance(), GUI.getInstance());
-    }
-
-    public static Duck getInstance(){
-        return DuckHolder.instance;
-    }
-
-    Duck(Game game, GUI gui){
-
+    Duck(){
         super();
-        this.game = game;
-        this.gui = gui;
-
         Random random = ThreadLocalRandom.current();
 
         x = random.nextBoolean() ? -(GUI.DUCK_WIDTH + 1) : GUI.GAME_WIDTH + 1;
@@ -49,7 +33,7 @@ public class Duck extends JComponent {
     private void dispose() {
         if (alive) {
             alive = false;
-            game.ducks.remove(this);
+            Game.getInstance().ducks.remove(this);
             this.repaint();
         }
     }
