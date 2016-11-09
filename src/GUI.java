@@ -9,30 +9,30 @@ import java.io.IOException;
  * Created by Admin on 09.11.2016.
  */
 public class GUI extends JFrame {
-
     /* constants */
     public static final int GAME_WIDTH = 800;
     public static final int GAME_HEIGHT = 600;
     private static final String RESOURCES_PATH = "./resources/";
     public static final int DUCK_WIDTH = 100;
     public static final int DUCK_HEIGHT = 100;
+
+    /* fields */
     private static BufferedImage duckImage = initImage("duck.png", DUCK_WIDTH, DUCK_HEIGHT);
     private static BufferedImage skyImage = initImage("sky.jpg", GAME_WIDTH - 1, GAME_HEIGHT - 1);
-    private Game game;
 
-    GUI(Game game) {
+    private GUI() {
         initGUI();
-        this.game = game;
     }
 
     /* Singleton */
 
-    private static class GUIHolder {
-        private final static GUI instance = new GUI(Game.getInstance());
-    }
+    private static GUI instance;
 
     public static GUI getInstance(){
-        return GUIHolder.instance;
+        if (instance == null) {
+            instance = new GUI();
+        }
+        return instance;
     }
 
     void initGUI() {
@@ -64,7 +64,7 @@ public class GUI extends JFrame {
         protected void paintChildren(Graphics g) {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            for (Duck duck: game.ducks) {
+            for (Duck duck: Game.getInstance().ducks) {
                 graphics2D.drawImage(duckImage, null, duck.x, duck.y);
             }
         }

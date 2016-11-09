@@ -2,28 +2,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game implements Runnable {
-
     /* fields */
-    public GUI gui;
     private int points;
     public List<Duck> ducks = new LinkedList<>();
     private boolean state = true; // true means now playing, false means game over
 
-    Game(){
+    private Game(){
         points = 0;
-        gui = new GUI(this.getInstance());
         Thread th = new Thread(this);
         th.start();
     }
 
     /* Singleton */
-
-    private static class GameHolder {
-        private final static Game instance = new Game();
-    }
+    private static Game instance;
 
     public static Game getInstance(){
-        return GameHolder.instance;
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
     }
 
     @Override
@@ -34,7 +31,7 @@ public class Game implements Runnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                gui.repaint();
+                GUI.getInstance().repaint();
                 if (Math.random() > 0.95) {
                     ducks.add(new Duck(Game.getInstance(), GUI.getInstance()));
                 }
