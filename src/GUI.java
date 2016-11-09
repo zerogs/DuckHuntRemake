@@ -56,7 +56,7 @@ public class GUI extends JFrame {
         protected void paintComponent(Graphics g) {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            graphics2D.drawImage(skyImage, null,  0, 0);
+            graphics2D.drawImage(skyImage, null, 0 , 0);
             System.out.println("we are painting the skies");
         }
 
@@ -66,6 +66,7 @@ public class GUI extends JFrame {
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (Duck duck: Game.getInstance().ducks) {
                 graphics2D.drawImage(duckImage, null, duck.x, duck.y);
+                System.out.println("ducks are painting");
             }
         }
     }
@@ -83,7 +84,7 @@ public class GUI extends JFrame {
             throwError("Ошибка ресурсов");
         }
 
-        BufferedImage scaledImage = new BufferedImage(DUCK_WIDTH, DUCK_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = scaledImage.createGraphics();
         g.drawImage(duck, 0, 0, width, height, null);
         g.dispose();

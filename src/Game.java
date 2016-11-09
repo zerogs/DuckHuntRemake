@@ -11,7 +11,7 @@ public class Game implements Runnable {
 
     Game(){
         points = 0;
-        gui = new GUI(this.getInstance());
+        gui = GUI.getInstance();
         Thread th = new Thread(this);
         th.start();
     }
@@ -36,7 +36,7 @@ public class Game implements Runnable {
             }
             gui.repaint();
             if (Math.random() > 0.95) {
-                ducks.add(new Duck(Game.getInstance(), GUI.getInstance()));
+                ducks.add(new Duck());
             }
         }
     }
