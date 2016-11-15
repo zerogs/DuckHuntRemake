@@ -17,13 +17,13 @@ public class Game implements Runnable {
     }
 
     /* Singleton */
-
-    private static class GameHolder {
-        private final static Game instance = new Game();
-    }
+    private static Game instance;
 
     public static Game getInstance(){
-        return GameHolder.instance;
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
     }
 
     @Override
@@ -38,9 +38,16 @@ public class Game implements Runnable {
             if (Math.random() > 0.95) {
                 ducks.add(new Duck());
             }
-        }
-    }
-    public void start(){
 
+            for(Duck duck : ducks){
+                if(duck.way){
+                    duck.x += 10;
+                }
+                else{
+                    duck.x -= 10;
+                }
+
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -8,7 +8,7 @@ public class Duck extends JComponent {
 
     int x;
     int y;
-    boolean alive;
+    private boolean alive;
     boolean way;
 
     Duck(){
@@ -18,23 +18,35 @@ public class Duck extends JComponent {
         x = random.nextBoolean() ? -(GUI.DUCK_WIDTH + 1) : GUI.GAME_WIDTH + 1;
         y = random.nextInt((GUI.GAME_HEIGHT / 2) - GUI.DUCK_HEIGHT);
         way = random.nextBoolean();
-        alive = true;
+        setAlive(true);
+
 
         enableInputMethods(true);
-        addMouseListener(new MouseAdapter() {
+       addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                System.out.println("Mouse was Clicked");
                 dispose();
             }
         });
-        System.out.println("duck was created @ " + Integer.toString(x) + "; " + Integer.toString(y));
     }
 
     private void dispose() {
-        if (alive) {
-            alive = false;
+        if (isAlive()) {
+            setAlive(false);
             Game.getInstance().ducks.remove(this);
             this.repaint();
         }
     }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 }
+
+
+

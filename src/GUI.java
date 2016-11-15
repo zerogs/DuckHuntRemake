@@ -10,8 +10,8 @@ import java.io.IOException;
  */
 public class GUI extends JFrame {
     /* constants */
-    public static final int GAME_WIDTH = 800;
-    public static final int GAME_HEIGHT = 600;
+    public static final int GAME_WIDTH = 1280;
+    public static final int GAME_HEIGHT = 720;
     private static final String RESOURCES_PATH = "./resources/";
     public static final int DUCK_WIDTH = 100;
     public static final int DUCK_HEIGHT = 100;
@@ -57,7 +57,6 @@ public class GUI extends JFrame {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics2D.drawImage(skyImage, null, 0 , 0);
-            System.out.println("we are painting the skies");
         }
 
         @Override
@@ -65,8 +64,8 @@ public class GUI extends JFrame {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             for (Duck duck: Game.getInstance().ducks) {
-                graphics2D.drawImage(duckImage, null, duck.x, duck.y);
-                System.out.println("ducks are painting");
+                if (duck.isAlive())
+                    graphics2D.drawImage(duckImage, null, duck.x, duck.y);
             }
         }
     }
