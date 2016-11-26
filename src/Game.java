@@ -1,53 +1,42 @@
-import java.util.LinkedList;
-import java.util.List;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class Game implements Runnable {
+/**
+ * Created by Admin on 19.11.2016.
+ */
+public class Game {
 
-    /* fields */
-    public GUI gui;
-    private int points;
-    public List<Duck> ducks = new LinkedList<>();
-    private boolean state = true; // true means now playing, false means game over
+    /* constants */
+    public static final int GAME_WIDTH = 1280;
+    public static final int GAME_HEIGHT = 720;
+    private static final String RESOURCES_PATH = "./resources/";
 
-    Game(){
-        points = 0;
-        gui = GUI.getInstance();
-        Thread th = new Thread(this);
-        th.start();
+
+    public static void main(String[] args) {
+        new GUI();
     }
 
-    /* Singleton */
-    private static Game instance;
-
-    public static Game getInstance(){
-        if (instance == null) {
-            instance = new Game();
-        }
-        return instance;
+    private static void throwError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Ошибка", JOptionPane.ERROR_MESSAGE); // TODO LINK OBJECT
+        System.exit(1);
     }
 
-    @Override
-    public void run(){
-        while(state){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            gui.repaint();
-            if (Math.random() > 0.95) {
-                ducks.add(new Duck());
-            }
-
-            for(Duck duck : ducks){
-                if(duck.way){
-                    duck.x += 10;
-                }
-                else{
-                    duck.x -= 10;
-                }
-
-            }
+    public static BufferedImage initImage(String imageName, int width, int height) {
+        Image duck = null;
+        try {
+            duck = ImageIO.read(new File(RESOURCES_PATH + imageName));
+        } catch (IOException e) {
+            throwError("Ошибка ресурсов");
         }
+
+        BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = scaledImage.createGraphics();
+        g.drawImage(duck, 0, 0, width, height, null);
+        g.dispose();
+        return scaledImage;
     }
 }

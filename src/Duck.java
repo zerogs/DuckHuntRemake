@@ -1,40 +1,37 @@
 import javax.swing.*;
-import java.awt.event.MouseEvent;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
-public class Duck extends JComponent {
+/**
+ * Created by Admin on 19.11.2016.
+ */
+public class Duck extends JComponent{
 
     int x;
     int y;
-    private boolean alive;
+    private boolean alive = true;
     boolean way;
+    public static final int DUCK_WIDTH = 100;
+    public static final int DUCK_HEIGHT = 100;
+    public static BufferedImage duckImage = Game.initImage("duck.png", DUCK_WIDTH, DUCK_HEIGHT);
 
     Duck(){
         super();
-        Random random = ThreadLocalRandom.current();
 
-        x = random.nextBoolean() ? -(GUI.DUCK_WIDTH + 1) : GUI.GAME_WIDTH + 1;
-        y = random.nextInt((GUI.GAME_HEIGHT / 2) - GUI.DUCK_HEIGHT);
-        way = random.nextBoolean();
-        setAlive(true);
-
-
-        enableInputMethods(true);
-       addMouseListener(new MouseAdapter() {
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("Mouse was Clicked");
+                System.out.println("Duck was clicked");
                 dispose();
             }
         });
     }
 
-    private void dispose() {
+    public void dispose() {
         if (isAlive()) {
             setAlive(false);
-            Game.getInstance().ducks.remove(this);
             this.repaint();
         }
     }
@@ -46,7 +43,32 @@ public class Duck extends JComponent {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+
+    /* Graphic methods */
+    @Override
+    protected void paintComponent(Graphics g){
+
+        Graphics2D graphics2D = (Graphics2D) g;
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if(this.isAlive()) {
+            graphics2D.drawImage(duckImage, 0, 0, this);
+            System.out.println("Duck was drawn");
+        }
+    }
+
+    @Override
+    public Dimension getPreferredSize(){
+        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
+    }
+
+    @Override
+    public Dimension getMinimumSize(){
+        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
+    }
+
+    @Override
+    public Dimension getMaximumSize(){
+        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
+    }
 }
-
-
-
