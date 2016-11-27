@@ -57,18 +57,6 @@ public class Duck extends JComponent{
         if ((way == RIGHT && x > Game.GAME_WIDTH) || (way != RIGHT && x + DUCK_WIDTH < 0)) {
             dispose(true);
         }
-//        if (way == RIGHT) {
-//            println("Вылетели за правую границу");
-//            if (x > Game.GAME_WIDTH){
-//                println("Вылетели за правую границу");
-//                dispose(true);
-//            }
-//        } else {
-//            if (x + DUCK_WIDTH < 0) {
-//                println("Вылетели за левую границу");
-//                dispose(true);
-//            }
-//        }
     }
 
     public boolean isAlive() {

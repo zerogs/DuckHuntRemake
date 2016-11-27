@@ -4,14 +4,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-/**
- * Created by Admin on 19.11.2016.
- */
-public class Game implements Runnable{
-    Thread th;
+public class Game{
 
     /* constants */
     public static final int GAME_WIDTH = 1280;
@@ -24,9 +22,6 @@ public class Game implements Runnable{
 
     Game() {
         gui = new GUI(this);
-        //th = new Thread(this);
-        th = Thread.currentThread();
-        th.start();
     }
 
 
@@ -55,23 +50,29 @@ public class Game implements Runnable{
         gui.removeDuck(duck);
     }
 
-    @Override
-    public void run(){
+    public static void main(String[] args) {
+        Game game = new Game();
         while(true) {
             try {
-                th.sleep(50);
+                Thread.sleep(50);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
             if(Math.random() > 0.97) {
-                Duck duck = new Duck(this);
-                ducks.add(duck);
-                gui.addDuck(duck);
+                Duck duck = new Duck(game);
+                game.ducks.add(duck);
+                game.gui.addDuck(duck);
             }
 
-            ducks.forEach(Duck::move);
+            //game.ducks.forEach(Duck::move);
+            Iterator it = game.ducks.iterator();
+            while (it.hasNext()){
+                Duck duck = (Duck) it.next();
+                duck.move();
+            }
 
-            gui.repaintAll();
+            game.gui.repaintAll();
         }
     }
+
 }

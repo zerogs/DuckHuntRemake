@@ -16,7 +16,7 @@ public class GUI {
         window.setSize(1280, 720);
         window.setTitle("Ducks destroyed - 0");
 
-
+        window.setLocationRelativeTo(null);
         window.getContentPane().add(panel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
