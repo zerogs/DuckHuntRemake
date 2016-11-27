@@ -1,7 +1,15 @@
 import javax.swing.*;
 
-public class Main{
+/**
+ * Created by aerof on 27.11.2016.
+ */
+public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Game::getInstance);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Game();
+            }
+        });
     }
 }
