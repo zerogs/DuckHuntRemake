@@ -1,61 +1,113 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+package src;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Duck extends JComponent{
+public class Duck{
+
+    /* Duck parameters */
     int x;
     int y;
-    boolean way;
-    private final boolean RIGHT = true;
+    private static final int LEFT = 0;
+    private static final int RIGHT = 1;
+    private static final int TOP_LEFT = 2;
+    private static final int TOP_RIGHT = 3;
+    int direction;
     private boolean alive = true;
-    private final int DUCK_WIDTH = 100;
-    private final int DUCK_HEIGHT = 100;
-    private BufferedImage duckImage = Game.initImage("duck.png", DUCK_WIDTH, DUCK_HEIGHT);
+    public DuckSprite ducksprite;
+    private boolean justKilled = false;
+    private static final int INCREDIBLE_SPEED = 30;
+    private static final int FAST_SPEED = 20;
+    private static final int MEDIUM_SPEED = 15;
+    private static final int LOW_SPEED = 10;
+    private int currentSpeed = LOW_SPEED;
+    public int dyingTime = 10;
+
+    /* Other constants */
+    public static final int DUCK_WIDTH = 110;
+    public static final int DUCK_HEIGHT = 110;
+    private final int DUCK_RADIUS_SQUARE = 55 * 55 ;
+    public static final int DUCK_CENTER = 55;
+    private static Random random = ThreadLocalRandom.current();
     Game game;
+
 
     Duck(Game game){
         super();
-
         this.game = game;
-
-        Random random = ThreadLocalRandom.current();
-        way = random.nextBoolean();
+        Game.playSound(Game.DUCK_FLY_S);
+        direction = random.nextInt(2);
         y = random.nextInt((int) (Game.GAME_HEIGHT * 0.75));
-        x = way == RIGHT ? -DUCK_WIDTH : Game.GAME_WIDTH;
+        x = direction == RIGHT ? -DUCK_WIDTH : Game.GAME_WIDTH;
+        ducksprite = new DuckSprite();
+
+        if(this.game.tier == game.EASY){
+            this.currentSpeed = LOW_SPEED;
+        }
+        else if(this.game.tier == game.MEDIUM){
+            this.currentSpeed = MEDIUM_SPEED;
+        }
+        else if(this.game.tier == game.HARD){
+            this.currentSpeed = FAST_SPEED;
+        }
+        else if(this.game.tier == game.NIGHTMARE){
+            this.currentSpeed = INCREDIBLE_SPEED;
+        }
 
 
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(alive)
-                    dispose(true);
-            }
-        });
-
-        setBounds(x, y, DUCK_WIDTH, DUCK_HEIGHT);
-
-    }
-
-    public void dispose(boolean killed) {
-        setAlive(false);
-        this.repaint();
-
-        game.duckWereKilled(this);
-        // TODO SEND KILLED FLAG TO PLAYER'S SCORE
-
-        println("We have a " + Integer.toString(game.ducks.size()) + " ducks in ducks list now");
     }
 
     public void move(){
-        x += way == RIGHT ? 10 : -10;
-        setBounds(x, y, DUCK_WIDTH, DUCK_HEIGHT);
+        if(this.isAlive()) {
+            if (Math.random() > 0.97) { // turn around
+                if ((direction == RIGHT && x > 3 * Game.GAME_WIDTH / 4) ||
+                        (direction == LEFT && x < (Game.GAME_WIDTH / 4))) {
+                    direction = random.nextInt(2) + 2; // cause top left or top right is 2 or 3 as value
+                }
+            }
 
-        if ((way == RIGHT && x > Game.GAME_WIDTH) || (way != RIGHT && x + DUCK_WIDTH < 0)) {
-            dispose(true);
+            switch (direction) {
+                case RIGHT:
+                    x += currentSpeed;
+                    break;
+                case LEFT:
+                    x -= currentSpeed;
+                    break;
+                case TOP_RIGHT:
+                    x += currentSpeed;
+                    y -= currentSpeed;
+                    break;
+                case TOP_LEFT:
+                    x -= currentSpeed;
+                    y -= currentSpeed;
+            }
+
+            if (((direction == RIGHT || direction == TOP_RIGHT) && x > Game.GAME_WIDTH) ||
+                    ((direction == LEFT || direction == TOP_LEFT) && x + DUCK_WIDTH < 0)){
+                this.setAlive(false);
+                game.score -= 100;
+                game.gui.updateScore();
+            }
+        }
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void clicked(int xShot, int yShot){
+        if(this.isAlive()) {
+            if (((Math.pow((xShot - (x + DUCK_CENTER)), 2)) + (Math.pow((yShot - (y + DUCK_CENTER)), 2))) < DUCK_RADIUS_SQUARE) {
+                this.setAlive(false);
+                this.justKilled = true;
+                game.score += 100;
+                game.checkScore();
+                game.gui.updateScore();
+            }
         }
     }
 
@@ -67,31 +119,8 @@ public class Duck extends JComponent{
         this.alive = alive;
     }
 
-    @Override
-    protected void paintComponent(Graphics g){
-        Graphics2D graphics2D = (Graphics2D) g;
-        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if(this.isAlive()) {
-            graphics2D.drawImage(duckImage, 0, 0, this);
-        }
-    }
+    public BufferedImage getImage(){
+        return ducksprite.getImage(this.direction, this.isAlive());
 
-    @Override
-    public Dimension getPreferredSize(){
-        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
-    }
-
-    @Override
-    public Dimension getMinimumSize(){
-        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
-    }
-
-    @Override
-    public Dimension getMaximumSize(){
-        return new Dimension(DUCK_WIDTH, DUCK_HEIGHT);
-    }
-
-    public static void println(Object o){
-        System.out.println(o);
     }
 }
